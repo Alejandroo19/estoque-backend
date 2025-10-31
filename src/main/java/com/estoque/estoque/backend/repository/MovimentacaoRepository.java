@@ -1,10 +1,8 @@
 package com.estoque.estoque.backend.repository;
 
-import com.estoque.estoque.backend.model.Categoria;
+import com.estoque.estoque.backend.model.Movimentacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
-
+public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Integer> {
 }

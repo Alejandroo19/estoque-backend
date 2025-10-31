@@ -1,43 +1,24 @@
 package com.estoque.estoque.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "categorias")
+@Table(name = "categoria")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Categoria {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id; // Mapeia para INT no MySQL
 
     @Column(nullable = false, unique = true)
     private String nome;
 
-    @Column(nullable = false)
-    private boolean ativo = true;
+    private String tamanho; // Pequeno, Médio, Grande
 
-    // --- Getters e Setters ---
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+    private String embalagem; // Lata, Vidro, Plástico
 }
