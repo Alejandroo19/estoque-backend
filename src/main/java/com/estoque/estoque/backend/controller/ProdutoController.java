@@ -1,71 +1,62 @@
 package com.estoque.estoque.backend.controller;
 
 import com.estoque.estoque.backend.model.Produto;
-import com.estoque.estoque.backend.repository.ProdutoRepository;
-import com.estoque.estoque.backend.repository.CategoriaRepository;
+import com.estoque.estoque.backend.service.ProdutoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/produtos")
-@CrossOrigin(origins = "*")
 public class ProdutoController {
+    @Autowired
+    private ProdutoService produtoService;
 
-    private final ProdutoRepository produtoRepository;
-    private final CategoriaRepository categoriaRepository;
-
-    public ProdutoController(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
-        this.produtoRepository = produtoRepository;
-        this.categoriaRepository = categoriaRepository;
+    @PostMapping
+    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
+        Produto novoProduto = produtoService.salvar(produto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto);
     }
 
     @GetMapping
-    public List<Produto> listar() {
-        return produtoRepository.findAll();
+    public ResponseEntity<List<Produto>> listarProdutos() {
+        List<Produto> produtos = produtoService.listarTodos();
+        return ResponseEntity.ok(produtos);
     }
 
-    @PostMapping
-    public ResponseEntity<?> criar(@RequestBody Produto produto) {
-        if (produto.getCategoria() == null || produto.getCategoria().getId() == null) {
-            return ResponseEntity.badRequest().body("Categoria é obrigatória");
-        }
-
-        var categoria = categoriaRepository.findById(produto.getCategoria().getId());
-        if (categoria.isEmpty()) {
-            return ResponseEntity.badRequest().body("Categoria não encontrada");
-        }
-
-        produto.setCategoria(categoria.get());
-        Produto salvo = produtoRepository.save(produto);
-        return ResponseEntity.ok(salvo);
+    @GetMapping("/{id}")
+    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable Integer id) {
+        return produtoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
-        Optional<Produto> existente = produtoRepository.findById(id);
-        if (existente.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable Integer id, @RequestBody Produto produtoDetalhes) {
+        return produtoService.buscarPorId(id).map(produtoExistente -> {
 
-        Produto atualizado = existente.get();
-        atualizado.setNome(produto.getNome());
-        atualizado.setPreco(produto.getPreco());
-        atualizado.setQuantidade(produto.getQuantidade());
-        atualizado.setAtivo(produto.isAtivo());
-        atualizado.setCategoria(produto.getCategoria());
+            produtoExistente.setNome(produtoDetalhes.getNome());
+            produtoExistente.setPrecoUnitario(produtoDetalhes.getPrecoUnitario());
+            produtoExistente.setUnidade(produtoDetalhes.getUnidade());
+            produtoExistente.setQuantidadeMinima(produtoDetalhes.getQuantidadeMinima());
+            produtoExistente.setQuantidadeMaxima(produtoDetalhes.getQuantidadeMaxima());
 
-        return ResponseEntity.ok(produtoRepository.save(atualizado));
+            produtoExistente.setQuantidadeEstoque(produtoDetalhes.getQuantidadeEstoque());
+
+            Produto produtoAtualizado = produtoService.salvar(produtoExistente);
+            return ResponseEntity.ok(produtoAtualizado);
+
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (!produtoRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deletarProduto(@PathVariable Integer id) {
+        if (produtoService.buscarPorId(id).isPresent()) {
+            produtoService.deletar(id);
+            return ResponseEntity.noContent().build();
         }
-        produtoRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 }

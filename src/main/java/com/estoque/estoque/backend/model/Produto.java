@@ -1,34 +1,46 @@
 package com.estoque.estoque.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
-@Table(name = "produtos")
-@Getter
-@Setter
+@Table(name = "produto")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Produto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @NotBlank
+    @Column(nullable = false, unique = true)
     private String nome;
 
-    @NotNull
-    private Double preco;
+    @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precoUnitario;
 
-    @NotNull
-    private Integer quantidade;
+    @Column(nullable = false)
+    private String unidade;
 
-    private boolean ativo = true;
+    @Column(name = "quantidade_estoque", nullable = false)
+    private Integer quantidadeEstoque;
 
-    // Muitos produtos pertencem a uma categoria
-    @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false)
+    @Column(name = "quantidade_minima")
+    private Integer quantidadeMinima;
+
+    @Column(name = "quantidade_maxima")
+    private Integer quantidadeMaxima;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "categoria_id", nullable = true)
     private Categoria categoria;
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("produto")
+    private List<Movimentacao> movimentacoes;
 }
