@@ -1,5 +1,6 @@
 package com.estoque.estoque.backend.controller;
 
+import com.estoque.estoque.backend.dto.ProdutoDTO;
 import com.estoque.estoque.backend.model.Produto;
 import com.estoque.estoque.backend.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
@@ -21,9 +24,12 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> listarProdutos() {
+    public ResponseEntity<List<ProdutoDTO>> listarProdutos() {
         List<Produto> produtos = produtoService.listarTodos();
-        return ResponseEntity.ok(produtos);
+        List<ProdutoDTO> produtosDTO = produtos.stream()
+                .map(ProdutoDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(produtosDTO);
     }
 
     @GetMapping("/{id}")

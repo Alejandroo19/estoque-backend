@@ -1,5 +1,6 @@
 package com.estoque.estoque.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -41,6 +42,6 @@ public class Produto {
     private Categoria categoria;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("produto")
+    @JsonIgnore
     private List<Movimentacao> movimentacoes;
 }
