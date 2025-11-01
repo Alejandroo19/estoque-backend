@@ -22,10 +22,10 @@ public class Movimentacao {
     private LocalDateTime dataMovimentacao;
 
     @Column(name = "quantidade_movimentada", nullable = false)
-    private Integer quantidadeMovimentada;
+    private Integer quantidade;
 
     @Column(name = "tipo_movimentacao", nullable = false)
-    private String tipoMovimentacao;
+    private String tipo;
 
     @Column(name = "nome_produto", nullable = true)
     private String nomeProduto;
