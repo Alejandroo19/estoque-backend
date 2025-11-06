@@ -48,8 +48,13 @@ public class ProdutoController {
             produtoExistente.setUnidade(produtoDetalhes.getUnidade());
             produtoExistente.setQuantidadeMinima(produtoDetalhes.getQuantidadeMinima());
             produtoExistente.setQuantidadeMaxima(produtoDetalhes.getQuantidadeMaxima());
-
             produtoExistente.setQuantidadeEstoque(produtoDetalhes.getQuantidadeEstoque());
+
+            if (produtoDetalhes.getCategoria() != null && produtoDetalhes.getCategoria().getId() != null) {
+                produtoExistente.setCategoria(produtoDetalhes.getCategoria());
+            } else {
+                produtoExistente.setCategoria(null);
+            }
 
             Produto produtoAtualizado = produtoService.salvar(produtoExistente);
             return ResponseEntity.ok(produtoAtualizado);
