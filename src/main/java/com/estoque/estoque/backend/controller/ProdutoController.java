@@ -3,6 +3,7 @@ package com.estoque.estoque.backend.controller;
 import com.estoque.estoque.backend.dto.ProdutoDTO;
 import com.estoque.estoque.backend.model.Produto;
 import com.estoque.estoque.backend.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto) {
+    public ResponseEntity<Produto> criarProduto(@Valid @RequestBody Produto produto) {
         Produto novoProduto = produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto);
     }
@@ -40,7 +41,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable Integer id, @RequestBody Produto produtoDetalhes) {
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable Integer id, @Valid @RequestBody Produto produtoDetalhes) {
         return produtoService.buscarPorId(id).map(produtoExistente -> {
 
             produtoExistente.setNome(produtoDetalhes.getNome());
