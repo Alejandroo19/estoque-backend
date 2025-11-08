@@ -65,7 +65,7 @@ spring.datasource.password=sua_senha_aqui # Sua senha do MySQL
 # Configurações do Hibernate (Mantenha para criação automática de tabelas)
 spring.jpa.hibernate.ddl-auto=update
 server.error.include-message=always # Exibe mensagens de erro úteis
-
+```
 ## 🚀 Como Rodar a Aplicação
 
 Para executar o backend, siga estes passos no seu terminal:
