@@ -1,5 +1,6 @@
 package com.estoque.estoque.backend.controller;
 
+import com.estoque.estoque.backend.dto.MovimentacaoDTO;
 import com.estoque.estoque.backend.model.Movimentacao;
 import com.estoque.estoque.backend.service.MovimentacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,12 @@ public class MovimentacaoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Movimentacao>> listarMovimentacoes() {
+    public ResponseEntity<List<MovimentacaoDTO>> listarMovimentacoes() {
         List<Movimentacao> movimentacoes = movimentacaoService.listarTodas();
-        return ResponseEntity.ok(movimentacoes);
+        List<MovimentacaoDTO> dtoList = movimentacoes.stream()
+                .map(MovimentacaoDTO::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(dtoList);
     }
 }

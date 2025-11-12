@@ -15,6 +15,7 @@ public class ProdutoDTO {
     private String nome;
     private BigDecimal preco;
     private String categoria;
+    private Integer quantidadeEstoque; 
 
     public static ProdutoDTO fromEntity(Produto produto) {
         ProdutoDTO dto = new ProdutoDTO();
@@ -22,6 +23,7 @@ public class ProdutoDTO {
         dto.setNome(produto.getNome());
         dto.setPreco(produto.getPrecoUnitario());
         dto.setCategoria(produto.getCategoria() != null ? produto.getCategoria().getNome() : "Sem Categoria");
+        dto.setQuantidadeEstoque(produto.getQuantidadeEstoque());
         return dto;
     }
 }

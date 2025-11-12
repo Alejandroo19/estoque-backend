@@ -53,8 +53,9 @@ public class MovimentacaoService {
         }
 
         movimentacao.setDataMovimentacao(LocalDateTime.now());
-        produtoRepository.save(produto);
+        movimentacao.setProduto(produto);
 
+        produtoRepository.save(produto);
         return movimentacaoRepository.save(movimentacao);
     }
 
